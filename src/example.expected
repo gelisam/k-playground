@@ -1,1 +1,3 @@
-`___LAMBDA`(`mu_.__LAMBDA`(#token("f","KVar"),`lambda_.__LAMBDA`(#token("x","KVar"),`if_then_else__LAMBDA`(`_<=__LAMBDA`(#token("x","KVar"),#token("1","Int")),#token("x","KVar"),`_+__LAMBDA`(`___LAMBDA`(#token("f","KVar"),`_+__LAMBDA`(#token("x","KVar"),#token("-1","Int"))),`___LAMBDA`(#token("f","KVar"),`_+__LAMBDA`(#token("x","KVar"),#token("-2","Int"))))))),#token("7","Int"))
+<k>
+  13
+</k>

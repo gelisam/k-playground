@@ -1,5 +1,6 @@
 src/.bash_history
 kast.out
 kompile.out
+krun.out
 src/lambda-kompiled/
 *.actual
