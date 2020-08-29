@@ -2,3 +2,4 @@ src/.bash_history
 kast.out
 kompile.out
 src/lambda-kompiled/
+*.actual
