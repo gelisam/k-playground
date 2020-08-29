@@ -11,20 +11,25 @@ src/lambda-kompiled/timestamp:
 	@cat kompile.out | grep -v '^\[WARNING\] Running as root is not recommended$$' | grep -v '^\[Warning\] Compiler: Could not find main syntax module with name LAMBDA-SYNTAX$$' | grep -v '^in definition.  Use --syntax-module to specify one. Using LAMBDA as default.$$' || true
 
 run: src/example.actual
-src/example.actual: src/example.lambda src/lambda-kompiled/timestamp
-	@${DOCKER} kast example.lambda &> kast.out
+%.actual: %.lambda src/lambda-kompiled/timestamp
+	@${DOCKER} kast $(notdir $<) &> kast.out
 	@-cat kast.out | grep -v '\[WARNING\] Running as root is not recommended' > $@ || true
 	@cat $@
 
-test: src/example.expected src/example.actual
-	@diff -urN $^
+LAMBDAS=$(wildcard src/*.lambda)
+ACTUALS=$(LAMBDAS:.lambda=.actual)
+TESTS=$(LAMBDAS:.lambda=.passed)
+.SECONDARY: ${ACTUALS}
+test: ${TESTS}
 	@echo "*** TESTS PASSED ***"
+%.passed: %.expected %.actual
+	@diff -urN $^
 
 repl:
 	@docker run ${FLAGS} -it "${IMAGE}"  bash
 
 clean:
-	rm -rf kompile.out kast.out src/*.actual
+	rm -rf kompile.out kast.out src/*.actual src/*.passed
 
 clobber: clean
 	rm -rf src/lambda-kompiled
