@@ -1,4 +1,4 @@
-require "lambda-syntax.k"
+require "../../syntax/lambda-syntax.k"
 
 module LAMBDA
   imports LAMBDA-SYNTAX
