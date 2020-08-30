@@ -1,8 +1,9 @@
 require "substitution.md"
 
-module LAMBDA
+module LAMBDA-SYNTAX
   imports DOMAINS
   imports SUBSTITUTION
+
   syntax Val ::= KVar
                | "lambda" KVar "." Exp          [binder]
   syntax Exp ::= Val
@@ -16,6 +17,11 @@ module LAMBDA
   syntax Exp ::= "let" KVar "=" Exp "in" Exp
   syntax Exp ::= "letrec" KVar KVar "=" Exp "in" Exp
                | "mu" KVar "." Exp              [binder]
+endmodule
+
+module LAMBDA
+  imports LAMBDA-SYNTAX
+
   syntax KResult ::= Val
 
   rule (lambda X:KVar . E:Exp) V:Val => E[V / X]

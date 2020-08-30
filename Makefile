@@ -8,7 +8,7 @@ DOCKER=docker run ${FLAGS} "${IMAGE}"
 build: src/lambda-kompiled/timestamp
 src/lambda-kompiled/timestamp: src/lambda.k
 	@${DOCKER} kompile --backend java lambda.k &> kompile.out && (echo 0 > kompile.err) || (echo 1 > kompile.err)
-	@cat kompile.out | grep -v '^\[WARNING\] Running as root is not recommended$$' | grep -v '^\[Warning\] Compiler: Could not find main syntax module with name LAMBDA-SYNTAX$$' | grep -v '^in definition.  Use --syntax-module to specify one. Using LAMBDA as default.$$' || true
+	@cat kompile.out | grep -v '^\[WARNING\] Running as root is not recommended$$' || true
 	@[[ "$$(cat kompile.err)" = 0 ]]
 
 %.parsed: %.lambda src/lambda-kompiled/timestamp
