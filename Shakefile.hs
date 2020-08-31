@@ -1,3 +1,4 @@
+import Control.Monad
 import Data.Foldable
 import Development.Shake
 import Development.Shake.FilePath
@@ -33,6 +34,15 @@ rulesFileToRulesFolder :: FilePath -> FilePath
 rulesFileToRulesFolder = takeDirectory
 
 -- |
+-- >>> actualResultToRulesFolder "src/operational-semantics/small-steps/example.actual"
+-- "src/operational-semantics/small-steps"
+actualResultToRulesFolder :: FilePath -> FilePath
+actualResultToRulesFolder = takeDirectory
+
+actualResultToExampleFile :: FilePath -> FilePath
+actualResultToExampleFile actualFile = "src" </> "examples" </> takeBaseName actualFile <.> "lambda"
+
+-- |
 -- >>> dockerizePath "src/foo/bar/baz.txt"
 -- "foo/bar/baz.txt"
 dockerizePath :: FilePath -> FilePath
@@ -43,7 +53,9 @@ main :: IO ()
 main = do
   pwd <- getCurrentDirectory
   let dockerFlags = ["--workdir=/root", "--mount", "type=bind,source=" <> pwd </> "src,target=/root"]
-  let dockerCmd_ cmd = command_ [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
+  let dockerCmd cmd = command [EchoStdout True, EchoStderr True]
+                               "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
+  let dockerCmd_ = void . dockerCmd_
 
   rulesFiles <- getDirectoryFilesIO "" [rulesFolderToRulesFile "src//"]
   let rulesFolders = map rulesFileToRulesFolder rulesFiles
@@ -69,3 +81,11 @@ main = do
       let rulesFile = rulesFolderToRulesFile rulesFolder
       need [rulesFile]
       dockerCmd_ ["kompile", "--backend", "java", dockerizePath rulesFile]
+
+    "src//*.actual" %> \actualResult -> do
+      let exampleFile = actualResultToExampleFile actualResult
+      let rulesFolder = actualResultToRulesFolder actualResult
+      let rulesProof = rulesFolderToRulesProof rulesFolder
+      need [rulesProof]
+      Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, dockerizePath exampleFile]
+      liftIO $ writeFile actualResult out
