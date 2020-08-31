@@ -93,6 +93,7 @@ main = do
       putInfo "Run the following from your terminal:"
       putInfo $ unwords $ ["docker", "run"] <> dockerFlags <> ["-it", dockerImage, "bash"]
 
+
     phony "rules" $ do
       need rulesProofs
 
@@ -114,6 +115,7 @@ main = do
       Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, dockerizePath exampleFile]
       liftIO $ writeFile actualResult out
 
+
     phony "tests" $ do
       need passedProofs
       putInfo "*** TESTS PASSED ***"
@@ -129,3 +131,11 @@ main = do
       need [expectedFile, actualFile]
       command_ [] "diff" ["-urN", expectedFile, actualFile]
       liftIO $ writeFile passedProof ""
+
+
+    phony "clean" $ do
+        liftIO $ removeFiles "src" ["//*.actual", "//*.passed"]
+
+    phony "clobber" $ do
+      need ["clean"]
+      liftIO $ removeFiles "src" ["//lambda-kompiled"]
