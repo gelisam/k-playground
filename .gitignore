@@ -1,5 +1,8 @@
 src/.bash_history
-src/lambda-kompiled/
+lambda-kompiled
 *.out
 *.err
 *.actual
+stack.yaml.lock
+.stack-work
+.shake
