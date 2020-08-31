@@ -3,6 +3,7 @@ lambda-kompiled
 *.out
 *.err
 *.actual
+*.passed
 stack.yaml.lock
 .stack-work
 .shake
