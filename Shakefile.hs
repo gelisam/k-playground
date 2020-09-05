@@ -75,7 +75,7 @@ main = do
   pwd <- getCurrentDirectory
   let dockerFlags = ["--workdir=/root", "--mount", "type=bind,source=" <> pwd </> "src,target=/root"]
   let dockerCmd cmd = command [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
-  let dockerCmd_ = void . dockerCmd_
+  let dockerCmd_ cmd = command_ [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
 
   rulesFiles <- getDirectoryFilesIO "" [rulesFolderToRulesFile "src//"]
   let rulesFolders = map rulesFileToRulesFolder rulesFiles
