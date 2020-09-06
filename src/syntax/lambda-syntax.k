@@ -4,6 +4,15 @@ module LAMBDA-SYNTAX
   imports DOMAINS
   imports SUBSTITUTION
 
+  syntax Exp ::= Exp "==>" KVar                            [strict(1)]
+               > Exp "&" Exp                               [strict(1), right]
+               | "----" "[" Args "]"
+  syntax Val ::= Val "==>" KVar
+  syntax Args ::= String | Args "," Exp
+  syntax KResult ::= Val
+  rule V:Val ==> X & E => E[V / X]
+
+
   syntax Val ::= KVar
                | "lambda" KVar "." Exp          [binder]
   syntax Exp ::= Val

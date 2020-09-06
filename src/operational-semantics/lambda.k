@@ -3,13 +3,6 @@ require "../syntax/lambda-syntax.k"
 module LAMBDA
   imports LAMBDA-SYNTAX
 
-  syntax Exp ::= Exp "==>" KVar                            [strict(1)]
-               > Exp "&" Exp                               [strict(1), right]
-               | "----" "[" Args "]"
-  syntax Val ::= Val "==>" KVar
-  syntax Args ::= String | Args "," Exp
-  syntax KResult ::= Val
-
   rule E1 + E2
     => E1 ==> !V1
      & E2 ==> !V2
@@ -45,6 +38,4 @@ module LAMBDA
      & ---- [ "app", !V0, !V1 ]
   rule ---- [ "app", lambda X. E2, E1 ]
     => E2[ E1 / X ]
-
-  rule V:Val ==> X & E => E[V / X]
 endmodule
