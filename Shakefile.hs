@@ -80,12 +80,14 @@ main = do
   rulesFiles <- getDirectoryFilesIO "" [rulesFolderToRulesFile "src//"]
   let rulesFolders = map rulesFileToRulesFolder rulesFiles
   let rulesProofs = map rulesFolderToRulesProof rulesFolders
+  let syntaxFile = "src/syntax/lambda-syntax.k"
 
   expectedFiles <- getDirectoryFilesIO "" ["src//*.expected"]
   let passedProofs = map expectedFileToPassedProof expectedFiles
   let actualFiles = map passedProofToActualFile passedProofs
 
-  shakeArgs shakeOptions $ do
+  version <- getHashedShakeVersion ["Shakefile.hs"]
+  shakeArgs shakeOptions {shakeVersion = version}$ do
     want ["tests"]
 
     phony "repl" $ do
@@ -104,7 +106,7 @@ main = do
     rulesFolderToRulesProof "src//" %> \rulesProof -> do
       let rulesFolder = rulesProofToRulesFolder rulesProof
       let rulesFile = rulesFolderToRulesFile rulesFolder
-      need [rulesFile]
+      need [syntaxFile, rulesFile]
       dockerCmd_ ["kompile", "--backend", "java", dockerizePath rulesFile]
 
     "src//*.actual" %> \actualResult -> do
