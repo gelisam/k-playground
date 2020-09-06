@@ -2,6 +2,7 @@ import Control.Monad
 import Data.Foldable
 import Development.Shake
 import Development.Shake.FilePath
+import System.Console.GetOpt
 import System.Directory
 
 
@@ -11,6 +12,16 @@ import System.Directory
 
 dockerImage :: String
 dockerImage = "runtimeverificationinc/kframework-k:ubuntu-bionic-master"
+
+
+-----------
+-- FLAGS --
+-----------
+
+data Flags
+  = Depth String  -- ^ should be an Int, but we're only passing it as-is anyway
+  deriving Show
+flags = [Option "" ["depth"] (ReqArg (Right . Depth) "N") "Stop after this number of rewrite steps."]
 
 
 -----------------------
@@ -109,11 +120,20 @@ main = do
   let dockerCmd cmd = command [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
   let dockerCmd_ cmd = command_ [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
 
+  let krun rulesFolder exampleFile maxDepth = do
+        let rulesProof = rulesFolderToRulesProof rulesFolder
+        need [rulesProof, exampleFile]
+        Stdout out <- dockerCmd [ "krun"
+                                , "--directory", dockerizePath rulesFolder
+                                , "--depth", maxDepth
+                                , dockerizePath exampleFile
+                                ]
+        pure out
+
 
   -------------
   -- TARGETS --
   -------------
-
 
   rulesFiles <- getDirectoryFilesIO "" [rulesFolderToRulesFile "src//"]
   let rulesFolders = map rulesFileToRulesFolder rulesFiles
@@ -130,9 +150,10 @@ main = do
   ------------------
 
   version <- getHashedShakeVersion ["Shakefile.hs"]
-  shakeArgs shakeOptions {shakeVersion = version}$ do
-    -- default target
-    want ["tests"]
+  shakeArgsWith shakeOptions {shakeVersion = version} flags $ \flags targets -> pure $ Just $ do
+    let defaultTarget = "tests"
+    want $ if null targets then [defaultTarget] else targets
+
 
     ------------------
     -- MISC TARGETS --
@@ -161,14 +182,26 @@ main = do
       need [syntaxFile, rulesFile]
       dockerCmd_ ["kompile", "--backend", "java", dockerizePath rulesFile]
 
+    for_ actualFiles $ \actualResult -> do
+      phony (dropExtensions . dockerizePath $ actualResult) $ do
+        let exampleFile = actualResultToExampleFile actualResult
+        let rulesFolder = actualResultToRulesFolder actualResult
+        case flags of
+          [Depth maxDepth] -> do
+            out <- krun rulesFolder exampleFile maxDepth
+            liftIO $ putStr out
+          [] -> do
+            need [actualResult]
+            cmd_ "cat" actualResult
+          _ -> error $ "unexpected flag combination: " <> show flags
+
     "src//*.actual" %> \actualResult -> do
       let exampleFile = actualResultToExampleFile actualResult
       let rulesFolder = actualResultToRulesFolder actualResult
-      let rulesProof = rulesFolderToRulesProof rulesFolder
       let depthFile = actualResultToDepthFile actualResult
-      need [exampleFile, rulesProof, depthFile]
+      need [depthFile]
       maxDepth <- liftIO $ readSingleLineFile depthFile
-      Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, "--depth", maxDepth, dockerizePath exampleFile]
+      out <- krun rulesFolder exampleFile maxDepth
       liftIO $ writeFile actualResult out
 
 
@@ -179,11 +212,6 @@ main = do
     phony "tests" $ do
       need passedProofs
       putInfo "*** TESTS PASSED ***"
-
-    for_ actualFiles $ \actualFile -> do
-      phony (dropExtensions . dockerizePath $ actualFile) $ do
-        need [actualFile]
-        cmd_ "cat" actualFile
 
     "src//*.passed" %> \passedProof -> do
       let expectedFile = passedProofToExpectedFile passedProof
