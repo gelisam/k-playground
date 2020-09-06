@@ -5,9 +5,17 @@ import Development.Shake.FilePath
 import System.Directory
 
 
+------------
+-- CONFIG --
+------------
+
 dockerImage :: String
 dockerImage = "runtimeverificationinc/kframework-k:ubuntu-bionic-master"
 
+
+-----------------------
+-- PATH TRANSFORMERS --
+-----------------------
 
 -- |
 -- >>> rulesFolderToRulesProof "src/operational-semantics/small-steps"
@@ -76,18 +84,36 @@ dockerizePath :: FilePath -> FilePath
 dockerizePath = dropDirectory1
 
 
+-----------
+-- UTILS --
+-----------
+
 readSingleLineFile :: FilePath -> IO String
 readSingleLineFile filePath = do
   [x] <- lines <$> readFile filePath
   pure x
 
 
+----------
+-- MAIN --
+----------
+
 main :: IO ()
 main = do
+  -------------
+  -- ACTIONS --
+  -------------
+
   pwd <- getCurrentDirectory
   let dockerFlags = ["--workdir=/root", "--mount", "type=bind,source=" <> pwd </> "src,target=/root"]
   let dockerCmd cmd = command [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
   let dockerCmd_ cmd = command_ [] "docker" $ ["run"] <> dockerFlags <> [dockerImage] <> cmd
+
+
+  -------------
+  -- TARGETS --
+  -------------
+
 
   rulesFiles <- getDirectoryFilesIO "" [rulesFolderToRulesFile "src//"]
   let rulesFolders = map rulesFileToRulesFolder rulesFiles
@@ -98,15 +124,29 @@ main = do
   let passedProofs = map expectedFileToPassedProof expectedFiles
   let actualFiles = map passedProofToActualFile passedProofs
 
+
+  ------------------
+  -- SHAKE CONFIG --
+  ------------------
+
   version <- getHashedShakeVersion ["Shakefile.hs"]
   shakeArgs shakeOptions {shakeVersion = version}$ do
+    -- default target
     want ["tests"]
+
+    ------------------
+    -- MISC TARGETS --
+    ------------------
 
     phony "repl" $ do
       -- '-it' commands must be run from a real terminal
       putInfo "Run the following from your terminal:"
       putInfo $ unwords $ ["docker", "run"] <> dockerFlags <> ["-it", dockerImage, "bash"]
 
+
+    -------------------
+    -- BUILD TARGETS --
+    -------------------
 
     phony "rules" $ do
       need rulesProofs
@@ -132,6 +172,10 @@ main = do
       liftIO $ writeFile actualResult out
 
 
+    ------------------
+    -- TEST TARGETS --
+    ------------------
+
     phony "tests" $ do
       need passedProofs
       putInfo "*** TESTS PASSED ***"
@@ -148,6 +192,10 @@ main = do
       command_ [] "diff" ["-urN", expectedFile, actualFile]
       liftIO $ writeFile passedProof ""
 
+
+    ---------------------
+    -- CLEANUP TARGETS --
+    ---------------------
 
     phony "clean" $ do
         liftIO $ removeFiles "src" ["//*.actual", "//*.passed"]
