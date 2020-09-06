@@ -113,7 +113,7 @@ main = do
       let exampleFile = actualResultToExampleFile actualResult
       let rulesFolder = actualResultToRulesFolder actualResult
       let rulesProof = rulesFolderToRulesProof rulesFolder
-      need [rulesProof]
+      need [exampleFile, rulesProof]
       Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, dockerizePath exampleFile]
       liftIO $ writeFile actualResult out
 
