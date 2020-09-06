@@ -46,6 +46,12 @@ actualResultToExampleFile :: FilePath -> FilePath
 actualResultToExampleFile actualFile = "src" </> "examples" </> takeBaseName actualFile <.> "lambda"
 
 -- |
+-- >>> actualResultToDepthFile "src/operational-semantics/small-steps/foo.actual"
+-- "src/examples/foo.depth"
+actualResultToDepthFile :: FilePath -> FilePath
+actualResultToDepthFile actualFile = actualFile -<.> "depth"
+
+-- |
 -- >>> passedProofToExpectedFile "src/operational-semantics/small-steps/foo.passed"
 -- "src/operational-semantics/small-steps/foo.actual"
 passedProofToActualFile :: FilePath -> FilePath
@@ -68,6 +74,12 @@ expectedFileToPassedProof passedFile = passedFile -<.> "passed"
 -- "foo/bar/baz.txt"
 dockerizePath :: FilePath -> FilePath
 dockerizePath = dropDirectory1
+
+
+readSingleLineFile :: FilePath -> IO String
+readSingleLineFile filePath = do
+  [x] <- lines <$> readFile filePath
+  pure x
 
 
 main :: IO ()
@@ -113,8 +125,10 @@ main = do
       let exampleFile = actualResultToExampleFile actualResult
       let rulesFolder = actualResultToRulesFolder actualResult
       let rulesProof = rulesFolderToRulesProof rulesFolder
-      need [exampleFile, rulesProof]
-      Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, dockerizePath exampleFile]
+      let depthFile = actualResultToDepthFile actualResult
+      need [exampleFile, rulesProof, depthFile]
+      maxDepth <- liftIO $ readSingleLineFile depthFile
+      Stdout out <- dockerCmd ["krun", "--directory", dockerizePath rulesFolder, "--depth", maxDepth, dockerizePath exampleFile]
       liftIO $ writeFile actualResult out
 
 
