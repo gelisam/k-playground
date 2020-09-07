@@ -40,6 +40,12 @@ module LAMBDA
     => E0 ==> !V0
      & E1 ==> !V1
      & ---- [ "app", !V0, !V1 ]
-  rule ---- [ "app", lambda X. E2, E1 ]
+  rule ---- [ "app", lambda X:_. E2, E1 ]
     => E2[ E1 / X ]
+
+  rule mu X : T . E
+    => E[(mu X : T . E) / X] ==> !V
+     & ---- [ "mu", !V ]
+  rule ---- [ "mu",  V ]
+    => V
 endmodule
