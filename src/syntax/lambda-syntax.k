@@ -4,13 +4,13 @@ module LAMBDA-SYNTAX
   imports DOMAINS
   imports SUBSTITUTION
 
-  syntax Exp ::= Exp "==>" KVar                            [strict(1)]
-               > Exp "&" Exp                               [strict(1), right]
-               | "----" "[" Args "]"
-  syntax Val ::= Val "==>" KVar
-  syntax Args ::= String | Args "," Exp
-  syntax KResult ::= Val
-  rule V:Val ==> X & E => E[V / X]
+  syntax KResult
+  syntax Focus ::= Exp | KResult
+  syntax Hyps ::= Focus "==>" KVar "&" Hyps       [strict(1), right]
+                | "----" "[" Args "]"
+  syntax Args ::= String | Args "," Arg
+  syntax Arg ::= KVar | KResult
+  rule R:KResult ==> X & Hyps => Hyps[R / X]
 
 
   syntax Val ::= KVar

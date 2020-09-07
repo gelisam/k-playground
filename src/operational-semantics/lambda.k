@@ -3,6 +3,10 @@ require "../syntax/lambda-syntax.k"
 module LAMBDA
   imports LAMBDA-SYNTAX
 
+  syntax Arg ::= Exp
+  syntax KResult ::= Val
+
+
   rule E1 + E2
     => E1 ==> !V1
      & E2 ==> !V2
