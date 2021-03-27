@@ -10,6 +10,7 @@ module LAMBDA
   rule _:Int
     => int
 
+
   rule E1:Exp + E2:Exp
     => E1 ~> hole + E2
 
@@ -24,4 +25,11 @@ module LAMBDA
 
   rule int + int
     => int
+
+
+  rule let X1:KVar : T1:Type = E1:Exp in E2:Exp
+    => E1 ~> let X1 : T1 = hole in E2
+
+  rule T1:Type ~> let X1:KVar : T1:Type = hole in E2:Exp
+    => E2[ T1 / X1 ]
 endmodule

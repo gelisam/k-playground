@@ -1,0 +1,2 @@
+let ten : int = 10
+in ten + ten
