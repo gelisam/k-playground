@@ -34,4 +34,25 @@ module LAMBDA
 
   rule let X1 : T1 = type(T1) in E2
     => E2[ type(T1) / X1 ]
+
+
+  rule \ X1 : T1 -> E2
+    => E2[ type(T1) / X1 ] ~> type(T1 -> hole)
+
+  rule type(T2) ~> type(T1 -> hole)
+    => type(T1 -> T2)
+
+
+  rule HOLE E1
+    => HOLE ~> hole E1                                                         [heat]
+  rule HOLE ~> hole E1
+    => HOLE E1                                                                 [cool]
+
+  rule EF HOLE
+    => HOLE ~> EF hole                                                         [heat]
+  rule HOLE ~> EF hole
+    => EF HOLE                                                                 [cool]
+
+  rule type(T1 -> T2) type(T1)
+    => type(T2)
 endmodule
