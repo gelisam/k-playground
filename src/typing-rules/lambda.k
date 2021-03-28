@@ -3,33 +3,35 @@ require "../syntax/lambda-syntax.k"
 module LAMBDA
   imports LAMBDA-SYNTAX
 
-  syntax Exp ::= "hole" | Type
+  syntax Hole ::= "hole"
+  syntax Type ::= Hole
   syntax KResult ::= Type
+  syntax Exp ::= KResult | Hole
 
 
   rule _:Int
     => int
 
 
-  rule E1:Exp + E2:Exp
-    => E1 ~> hole + E2
+  rule HOLE + E2
+    => HOLE ~> hole + E2                                                       [heat]
+  rule HOLE ~> hole + E2
+    => HOLE + E2                                                               [cool]
 
-  rule T1:Type ~> hole + E2:Exp
-    => E2 ~> T1 + hole
-
-  rule T1:Type ~> hole + E2:Exp
-    => E2 ~> T1 + hole
-
-  rule T2:Type ~> T1:Type + hole
-    => T1 + T2
+  rule E1 + HOLE
+    => HOLE ~> E1 + hole                                                       [heat]
+  rule HOLE ~> E1 + hole
+    => E1 + HOLE                                                               [cool]
 
   rule int + int
     => int
 
 
-  rule let X1:KVar : T1:Type = E1:Exp in E2:Exp
-    => E1 ~> let X1 : T1 = hole in E2
+  rule let X1 : T1 = HOLE in E2
+    => HOLE ~> let X1 : T1 = hole in E2                                        [heat]
+  rule HOLE ~> let X1 : T1 = hole in E2
+    => let X1 : T1 = HOLE in E2                                                [cool]
 
-  rule T1:Type ~> let X1:KVar : T1:Type = hole in E2:Exp
+  rule let X1 : T1 = T1:Type in E2
     => E2[ T1 / X1 ]
 endmodule
