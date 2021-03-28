@@ -5,12 +5,12 @@ module LAMBDA
 
   syntax Hole ::= "hole"
   syntax Type ::= Hole
-  syntax KResult ::= Type
+  syntax KResult ::= "type(" Type ")"                                          [klabel(#type),symbol]
   syntax Exp ::= KResult | Hole
 
 
   rule _:Int
-    => int
+    => type( int )
 
 
   rule HOLE + E2
@@ -23,8 +23,8 @@ module LAMBDA
   rule HOLE ~> E1 + hole
     => E1 + HOLE                                                               [cool]
 
-  rule int + int
-    => int
+  rule type(int) + type(int)
+    => type(int)
 
 
   rule let X1 : T1 = HOLE in E2
@@ -32,6 +32,6 @@ module LAMBDA
   rule HOLE ~> let X1 : T1 = hole in E2
     => let X1 : T1 = HOLE in E2                                                [cool]
 
-  rule let X1 : T1 = T1:Type in E2
-    => E2[ T1 / X1 ]
+  rule let X1 : T1 = type(T1) in E2
+    => E2[ type(T1) / X1 ]
 endmodule

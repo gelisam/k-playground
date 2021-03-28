@@ -23,29 +23,35 @@ $ .shake/build typing-rules/nine --depth=2
 2 ~> hole + 3 ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=3
-int ~> hole + 3 ~> hole + 4
+type(int) ~> hole + 3 ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=4
-3 ~> int + 3 ~> hole + 4
+type(int) + 3 ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=5
-int ~> int + 3 ~> hole + 4
+3 ~> type(int) + hole ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=6
-int + int ~> hole + 4
+type(int) ~> type(int) + hole ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=7
-int ~> hole + 4
+type(int) + type(int) ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=8
-4 ~> int + hole
+type(int) ~> hole + 4
 
 $ .shake/build typing-rules/nine --depth=9
-int ~> int + hole
+type(int) + 4
 
 $ .shake/build typing-rules/nine --depth=10
-int + int
+4 ~> type(int) + hole
 
 $ .shake/build typing-rules/nine --depth=11
-int
+type(int) ~> type(int) + hole
+
+$ .shake/build typing-rules/nine --depth=12
+type(int) + type(int)
+
+$ .shake/build typing-rules/nine --depth=13
+type(int)
 ```
