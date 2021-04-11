@@ -55,3 +55,55 @@ type(int) + type(int)
 $ .shake/build typing-rules/nine --depth=13
 type(int)
 ```
+
+Here is a more interesting example involving `let` and `lambda`:
+
+```
+let f : int -> int -> int
+      = \ x : int -> \ y : int -> x + y
+in f 1
+
+\ x : int -> \ y : int -> x + y ~> let f : int -> int -> int
+                                         = hole
+                                   in f 1
+
+\ y : int -> type( int ) + y ~> type( int -> hole )
+                             ~> let f : int -> int -> int
+                                      = hole
+                                in f 1
+
+type( int ) + type( int ) ~> type( int -> hole )
+                          ~> type( int -> hole )
+                          ~> let f : int -> int -> int
+                                   = hole
+                             in f 1
+
+type( int ) ~> type( int -> hole )
+            ~> type( int -> hole )
+            ~> let f : int -> int -> int
+                     = hole
+               in f 1
+
+type( int -> int ) ~> type( int -> hole )
+                   ~> let f : int -> int -> int
+                            = hole
+                      in f 1
+
+type( int -> int -> int ) ~> let f : int -> int -> int
+                                   = hole
+                             in f 1
+
+let f : int -> int -> int
+      = type( int -> int -> int )
+in f 1
+
+type( int -> int -> int ) 1
+
+1 ~> type( int -> int -> int ) hole
+
+type( int ) ~> type( int -> int -> int ) hole
+
+type( int -> int -> int ) type( int )
+
+type( int -> int )
+```
