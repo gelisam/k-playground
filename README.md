@@ -56,54 +56,246 @@ $ .shake/build typing-rules/nine --depth=13
 type(int)
 ```
 
-Here is a more interesting example involving `let` and `lambda`:
+Here is a more interesting example involving variables, whose types are stored in a context `Gamma`.
 
 ```
 let f : int -> int -> int
-      = \ x : int -> \ y : int -> x + y
-in f 1
+      = \ x : int -> \ y : int -> x + y in f 1
 
-\ x : int -> \ y : int -> x + y ~> let f : int -> int -> int
-                                         = hole
-                                   in f 1
+<Typecheck>
+  <k> let f : int -> int -> int
+            = \ x : int -> \ y : int -> x + y in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
 
-\ y : int -> type( int ) + y ~> type( int -> hole )
-                             ~> let f : int -> int -> int
-                                      = hole
-                                in f 1
+<Typecheck>
+  <k> \ x : int -> \ y : int -> x + y
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
 
-type( int ) + type( int ) ~> type( int -> hole )
-                          ~> type( int -> hole )
-                          ~> let f : int -> int -> int
-                                   = hole
-                             in f 1
+<Typecheck>
+  <k> \ y : int -> x + y
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+  </ctx>
+</Typecheck>
 
-type( int ) ~> type( int -> hole )
-            ~> type( int -> hole )
-            ~> let f : int -> int -> int
-                     = hole
-               in f 1
+<Typecheck>
+  <k> x + y
+   ~> x |-> int
+   ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int -> int ) ~> type( int -> hole )
-                   ~> let f : int -> int -> int
-                            = hole
-                      in f 1
+<Typecheck>
+  <k> x
+   ~> hole + y
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int -> int -> int ) ~> let f : int -> int -> int
-                                   = hole
-                             in f 1
+<Typecheck>
+  <k> type( int )
+   ~> hole + y
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-let f : int -> int -> int
-      = type( int -> int -> int )
-in f 1
+<Typecheck>
+  <k> type( int ) + y
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int -> int -> int ) 1
+<Typecheck>
+  <k> y
+   ~> type( int ) + hole
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-1 ~> type( int -> int -> int ) hole
+<Typecheck>
+  <k> type( int )
+   ~> type( int ) + hole
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int ) ~> type( int -> int -> int ) hole
+<Typecheck>
+  <k> type( int ) + type( int )
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int -> int -> int ) type( int )
+<Typecheck>
+  <k> type( int )
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
 
-type( int -> int )
+<Typecheck>
+  <k> type( int -> int )
+   ~> .Map ~> type( int -> hole )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    x |-> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int )
+   ~> let f : int -> int -> int
+            = hole in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> let f : int -> int -> int
+            = type( int -> int -> int ) in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> f 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> f
+   ~> hole 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int )
+   ~> hole 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int ) 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> 1
+   ~> type( int -> int -> int ) hole
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int )
+   ~> type( int -> int -> int ) hole
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int ) type( int )
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int )
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
 ```
