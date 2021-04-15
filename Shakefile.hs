@@ -11,7 +11,7 @@ import System.Directory
 ------------
 
 dockerImage :: String
-dockerImage = "runtimeverificationinc/kframework-k:ubuntu-bionic-master"
+dockerImage = "runtimeverificationinc/kframework-k:ubuntu-focal-5.0.21"
 
 
 -----------
@@ -180,7 +180,7 @@ main = do
       let rulesFolder = rulesProofToRulesFolder rulesProof
       let rulesFile = rulesFolderToRulesFile rulesFolder
       need [syntaxFile, rulesFile]
-      dockerCmd_ ["kompile", "--backend", "java", dockerizePath rulesFile]
+      dockerCmd_ ["kompile", "--backend", "llvm", dockerizePath rulesFile]
 
     for_ actualFiles $ \actualResult -> do
       phony (dropExtensions . dockerizePath $ actualResult) $ do
