@@ -1,3 +1,8 @@
-<k>
-  type( int -> int ) ~> .
-</k>
+<Typecheck>
+  <k>
+    type( int -> int ) ~> .
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
