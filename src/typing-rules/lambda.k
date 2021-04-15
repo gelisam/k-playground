@@ -23,10 +23,10 @@ module LAMBDA
   rule HOLE ~> hole + E2
     => HOLE + E2                                                               [cool]
 
-  rule E1 + HOLE
-    => HOLE ~> E1 + hole                                                       [heat]
-  rule HOLE ~> E1 + hole
-    => E1 + HOLE                                                               [cool]
+  rule type(T1) + HOLE
+    => HOLE ~> type(T1) + hole                                                 [heat]
+  rule HOLE ~> type(T1) + hole
+    => type(T1) + HOLE                                                         [cool]
 
   rule type(int) + type(int)
     => type(int)
@@ -69,10 +69,10 @@ module LAMBDA
   rule HOLE ~> hole E1
     => HOLE E1                                                                 [cool]
 
-  rule EF HOLE
-    => HOLE ~> EF hole                                                         [heat]
-  rule HOLE ~> EF hole
-    => EF HOLE                                                                 [cool]
+  rule type(TF) HOLE
+    => HOLE ~> type(TF) hole                                                   [heat]
+  rule HOLE ~> type(TF) hole
+    => type(TF) HOLE                                                           [cool]
 
   rule type(T1 -> T2) type(T1)
     => type(T2)
