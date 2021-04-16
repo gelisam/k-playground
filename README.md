@@ -14,46 +14,74 @@ After having run `./build.sh`, the Shake executable now knows about your example
 
 ```
 $ .shake/build typing-rules/nine --depth=0
-2 + 3 + 4
+<k> 2 + 3 + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=1
-2 + 3 ~> hole + 4
+<k> 2 + 3
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=2
-2 ~> hole + 3 ~> hole + 4
+<k> 2
+ ~> hole + 3
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=3
-type(int) ~> hole + 3 ~> hole + 4
+<k> type(int)
+ ~> hole + 3
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=4
-type(int) + 3 ~> hole + 4
+<k> type(int) + 3
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=5
-3 ~> type(int) + hole ~> hole + 4
+<k> 3
+ ~> type(int) + hole
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=6
-type(int) ~> type(int) + hole ~> hole + 4
+<k> type(int)
+ ~> type(int) + hole
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=7
-type(int) + type(int) ~> hole + 4
+<k> type(int) + type(int)
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=8
-type(int) ~> hole + 4
+<k> type(int)
+ ~> hole + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=9
-type(int) + 4
+<k> type(int) + 4
+</k>
 
 $ .shake/build typing-rules/nine --depth=10
-4 ~> type(int) + hole
+<k> 4
+ ~> type(int) + hole
+</k>
 
 $ .shake/build typing-rules/nine --depth=11
-type(int) ~> type(int) + hole
+<k> type(int)
+ ~> type(int) + hole
+</k>
 
 $ .shake/build typing-rules/nine --depth=12
-type(int) + type(int)
+<k> type(int) + type(int)
+</k>
 
 $ .shake/build typing-rules/nine --depth=13
-type(int)
+<k> type(int)
+</k>
 ```
 
 Here is a more interesting example involving variables, whose types are stored in a context `Gamma`.
