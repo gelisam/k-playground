@@ -60,11 +60,13 @@ Here is a more interesting example involving variables, whose types are stored i
 
 ```
 let f : int -> int -> int
-      = \ x : int -> \ y : int -> x + y in f 1
+      = \ x : int -> \ y : int -> x + y
+in f 1
 
 <Typecheck>
   <k> let f : int -> int -> int
-            = \ x : int -> \ y : int -> x + y in f 1
+            = \ x : int -> \ y : int -> x + y
+      in f 1
   </k>
   <ctx>
     .Map
@@ -74,7 +76,8 @@ let f : int -> int -> int
 <Typecheck>
   <k> \ x : int -> \ y : int -> x + y
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     .Map
@@ -85,7 +88,8 @@ let f : int -> int -> int
   <k> \ y : int -> x + y
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -98,7 +102,8 @@ let f : int -> int -> int
    ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -112,7 +117,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -126,7 +132,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -139,7 +146,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -153,7 +161,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -167,7 +176,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -180,7 +190,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -193,7 +204,8 @@ let f : int -> int -> int
    ~> x |-> int ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -205,7 +217,8 @@ let f : int -> int -> int
   <k> type( int -> int )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     x |-> int
@@ -215,7 +228,8 @@ let f : int -> int -> int
 <Typecheck>
   <k> type( int -> int -> int )
    ~> let f : int -> int -> int
-            = hole in f 1
+            = hole
+      in f 1
   </k>
   <ctx>
     .Map
@@ -224,7 +238,8 @@ let f : int -> int -> int
 
 <Typecheck>
   <k> let f : int -> int -> int
-            = type( int -> int -> int ) in f 1
+            = type( int -> int -> int )
+      in f 1
   </k>
   <ctx>
     .Map
