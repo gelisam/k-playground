@@ -13,6 +13,6 @@ module LAMBDA-SYNTAX
                | Exp Exp                                                       [klabel(#apply),symbol,left]
                > Exp "+" Exp                                                   [klabel(#plus),symbol,left]
                | KVar
-               > "let" KVar ":" Type "=" Exp "in" Exp                          [klabel(#let),symbol,binder]
-               | "\\" KVar ":" Type "->" Exp                                   [klabel(#lambda),symbol,binder]
+               > "let" KVar "=" Exp "in" Exp                                   [klabel(#let),symbol,binder]
+               | "\\" KVar "->" Exp                                            [klabel(#lambda),symbol,binder]
 endmodule

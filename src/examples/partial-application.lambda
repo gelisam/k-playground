@@ -1,3 +1,2 @@
-let f : int -> int -> int
-      = \ x : int -> \ y : int -> x + y
+let f = \ x -> \ y -> x + y
 in f 1

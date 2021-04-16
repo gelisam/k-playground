@@ -314,3 +314,238 @@ in f 1
   </ctx>
 </Typecheck>
 ```
+
+And here is an even more interesting variant with type inference:
+
+```
+let f = \ x -> \ y -> x + y
+in f 1
+
+<Typecheck>
+  <k> let f = \ x -> \ y -> x + y
+      in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> \ x -> \ y -> x + y
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> \ y -> x + y
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> x + y
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> x
+   ~> hole + y
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( ?T1:Type )
+   ~> hole + y
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( ?T1:Type ) + y
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> y
+   ~> type( ?T1:Type ) + hole
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( ?T2:Type )
+   ~> type( ?T1:Type ) + hole
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( ?T1:Type ) + type( ?T2:Type )
+   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> .Map ~> type( ?T1:Type -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> ?T1:Type
+    y |-> ?T2:Type
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int )
+   ~> x |-> int ~> type( int -> hole )
+   ~> .Map ~> type( int -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> int
+    y |-> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int )
+   ~> .Map ~> type( int -> hole )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    x |-> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int )
+   ~> let f = hole
+      in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> let f = type( int -> int -> int )
+      in f 1
+  </k>
+  <ctx>
+    .Map
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> f 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> f
+   ~> hole 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int )
+   ~> hole 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int ) 1
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> 1
+   ~> type( int -> int -> int ) hole
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int )
+   ~> type( int -> int -> int ) hole
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+
+<Typecheck>
+  <k> type( int -> int -> int ) type( int )
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
+```

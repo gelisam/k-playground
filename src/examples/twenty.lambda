@@ -1,2 +1,2 @@
-let ten : int = 10
+let ten = 10
 in ten + ten

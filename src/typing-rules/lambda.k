@@ -28,20 +28,22 @@ module LAMBDA
   rule HOLE ~> type(T1) + hole
     => type(T1) + HOLE                                                         [cool]
 
-  rule type(int) + type(int)
-    => type(int)
+  rule type(T1) + type(T2)
+    => {T1 #Equals int}
+  #And {T2 #Equals int}
+  #And type(int)
 
 
   rule <k> X:KVar => type(T) ... </k>
        <ctx> ... X |-> T ... </ctx>
 
 
-  rule let X1 : T1 = HOLE in E2
-    => HOLE ~> let X1 : T1 = hole in E2                                        [heat]
-  rule HOLE ~> let X1 : T1 = hole in E2
-    => let X1 : T1 = HOLE in E2                                                [cool]
+  rule let X1 = HOLE in E2
+    => HOLE ~> let X1 = hole in E2                                             [heat]
+  rule HOLE ~> let X1 = hole in E2
+    => let X1 = HOLE in E2                                                     [cool]
 
-  rule <k> let X1 : T1 = type(T1) in E2
+  rule <k> let X1 = type(T1) in E2
         => E2
        </k>
        <ctx> Gamma:Map
@@ -49,12 +51,12 @@ module LAMBDA
        </ctx>
 
 
-  rule <k> \ X1 : T1 -> E2
-        => E2 ~> Gamma ~> type(T1 -> hole)
+  rule <k> \ X1 -> E2
+        => E2 ~> Gamma ~> type(?T1 -> hole)
            ...
        </k>
        <ctx> Gamma:Map
-          => Gamma[X1 <- T1]
+          => Gamma[X1 <- ?T1]
        </ctx>
 
   rule <k> type(T2) ~> Gamma ~> type(T1 -> hole)
