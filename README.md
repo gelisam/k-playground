@@ -95,12 +95,12 @@ Here is a more interesting example involving variables, whose types are stored i
 
 ```
 let f : int -> int -> int
-      = \ x : int -> \ y : int -> x + y
+      = lambda x : int -> lambda y : int -> x + y
 in f 1
 
 <Typecheck>
   <k> let f : int -> int -> int
-            = \ x : int -> \ y : int -> x + y
+            = lambda x : int -> lambda y : int -> x + y
       in f 1
   </k>
   <ctx>
@@ -109,7 +109,7 @@ in f 1
 </Typecheck>
 
 <Typecheck>
-  <k> \ x : int -> \ y : int -> x + y
+  <k> lambda x : int -> lambda y : int -> x + y
    ~> let f : int -> int -> int
             = hole
       in f 1
@@ -120,7 +120,7 @@ in f 1
 </Typecheck>
 
 <Typecheck>
-  <k> \ y : int -> x + y
+  <k> lambda y : int -> x + y
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -351,17 +351,17 @@ in f 1
 ```
 </details>
 
-And here is an even more interesting variant with type inference:
+And here is an even more interesting variant with syntactic sugar and type inference:
 
 <details>
 <summary>Click to expand</summary>
 
 ```
-let f = \ x -> \ y -> x + y
+let f = \ x y -> x + y
 in f 1
 
 <Typecheck>
-  <k> let f = \ x -> \ y -> x + y
+  <k> let f = lambda x -> lambda y -> x + y
       in f 1
   </k>
   <ctx>
@@ -370,7 +370,7 @@ in f 1
 </Typecheck>
 
 <Typecheck>
-  <k> \ x -> \ y -> x + y
+  <k> lambda x -> lambda y -> x + y
    ~> let f = hole
       in f 1
   </k>
@@ -380,7 +380,7 @@ in f 1
 </Typecheck>
 
 <Typecheck>
-  <k> \ y -> x + y
+  <k> lambda y -> x + y
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1

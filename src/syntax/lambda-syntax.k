@@ -14,5 +14,11 @@ module LAMBDA-SYNTAX
                > Exp "+" Exp                                                   [klabel(#plus),symbol,left]
                | KVar
                > "let" KVar "=" Exp "in" Exp                                   [klabel(#let),symbol,binder]
-               | "\\" KVar "->" Exp                                            [klabel(#lambda),symbol,binder]
+               | "lambda" KVar "->" Exp                                        [klabel(#lambda),symbol,binder]
+               | "\\" KVars "->" Exp
+
+  syntax KVars ::= KVar
+                 | KVar KVars
+  rule \ X -> E => lambda X -> E                                               [macro]
+  rule \ X XS -> E => lambda X -> \ XS -> E                                    [macro]
 endmodule

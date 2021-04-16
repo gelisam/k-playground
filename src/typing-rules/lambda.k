@@ -51,7 +51,7 @@ module LAMBDA
        </ctx>
 
 
-  rule <k> \ X1 -> E2
+  rule <k> lambda X1 -> E2
         => E2 ~> Gamma ~> type(?T1 -> hole)
            ...
        </k>
