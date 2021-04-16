@@ -12,6 +12,9 @@ You can now modify the provided toy language's syntax in `src/syntax/lambda-synt
 
 After having run `./build.sh`, the Shake executable now knows about your example program. It then becomes possible to run the type inference algorithm on it step by step, which is useful for debugging:
 
+<details>
+<summary>Click to expand</summary>
+
 ```
 $ .shake/build typing-rules/nine --depth=0
 <k> 2 + 3 + 4
@@ -83,8 +86,12 @@ $ .shake/build typing-rules/nine --depth=13
 <k> type(int)
 </k>
 ```
+</details>
 
 Here is a more interesting example involving variables, whose types are stored in a context `Gamma`.
+
+<details>
+<summary>Click to expand</summary>
 
 ```
 let f : int -> int -> int
@@ -342,8 +349,12 @@ in f 1
   </ctx>
 </Typecheck>
 ```
+</details>
 
 And here is an even more interesting variant with type inference:
+
+<details>
+<summary>Click to expand</summary>
 
 ```
 let f = \ x -> \ y -> x + y
@@ -497,3 +508,4 @@ in f 1
   </ctx>
 </Typecheck>
 ```
+</details>
