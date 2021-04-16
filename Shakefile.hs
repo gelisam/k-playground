@@ -104,6 +104,34 @@ readSingleLineFile filePath = do
   [x] <- lines <$> readFile filePath
   pure x
 
+-- |
+-- >>> :{
+-- putStr $ dropUnificationVars
+--   "  <Typecheck>\n\
+--   \    ...\n\
+--   \  </Typecheck>\n\
+--   \#And\n\
+--   \  ...\n\
+--   \#And\n\
+--   \  ...\n"
+-- :}
+-- <Typecheck>
+--   ...
+-- </Typecheck>
+dropUnificationVars :: String -> String
+dropUnificationVars
+  = unlines
+  . unindent
+  . takeWhile (/= "#And")
+  . lines
+  where
+    unindent :: [String] -> [String]
+    unindent []
+      = []
+    unindent xs@(firstLine:_)
+      = let indentation = takeWhile (== ' ') firstLine
+        in fmap (drop (length indentation)) xs
+
 
 ----------
 -- MAIN --
@@ -128,7 +156,7 @@ main = do
                                 , "--depth", maxDepth
                                 , dockerizePath exampleFile
                                 ]
-        pure out
+        pure $ dropUnificationVars out
 
 
   -------------

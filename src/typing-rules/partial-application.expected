@@ -1,20 +1,8 @@
-  <Typecheck>
-    <k>
-      type( int -> int ) ~> .
-    </k>
-    <ctx>
-      f |-> int -> int -> int
-    </ctx>
-  </Typecheck>
-#And
-  {
-    ?T1:Type
-  #Equals
-    int
-  }
-#And
-  {
-    ?T2:Type
-  #Equals
-    int
-  }
+<Typecheck>
+  <k>
+    type( int -> int ) ~> .
+  </k>
+  <ctx>
+    f |-> int -> int -> int
+  </ctx>
+</Typecheck>
