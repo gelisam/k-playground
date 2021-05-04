@@ -133,8 +133,7 @@ in f 1
 
 <Typecheck>
   <k> x + y
-   ~> x |-> int
-   ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -149,7 +148,7 @@ in f 1
 <Typecheck>
   <k> x
    ~> hole + y
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -164,7 +163,7 @@ in f 1
 <Typecheck>
   <k> type( int )
    ~> hole + y
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -178,7 +177,7 @@ in f 1
 
 <Typecheck>
   <k> type( int ) + y
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -193,7 +192,7 @@ in f 1
 <Typecheck>
   <k> y
    ~> type( int ) + hole
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -208,7 +207,7 @@ in f 1
 <Typecheck>
   <k> type( int )
    ~> type( int ) + hole
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -222,7 +221,7 @@ in f 1
 
 <Typecheck>
   <k> type( int ) + type( int )
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -236,7 +235,7 @@ in f 1
 
 <Typecheck>
   <k> type( int )
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f : int -> int -> int
             = hole
@@ -392,7 +391,7 @@ in f 1
 
 <Typecheck>
   <k> x + y
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -406,7 +405,7 @@ in f 1
 <Typecheck>
   <k> x
    ~> hole + y
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -420,7 +419,7 @@ in f 1
 <Typecheck>
   <k> type( ?T1:Type )
    ~> hole + y
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -433,7 +432,7 @@ in f 1
 
 <Typecheck>
   <k> type( ?T1:Type ) + y
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -447,7 +446,7 @@ in f 1
 <Typecheck>
   <k> y
    ~> type( ?T1:Type ) + hole
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -461,7 +460,7 @@ in f 1
 <Typecheck>
   <k> type( ?T2:Type )
    ~> type( ?T1:Type ) + hole
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -474,7 +473,7 @@ in f 1
 
 <Typecheck>
   <k> type( ?T1:Type ) + type( ?T2:Type )
-   ~> x |-> ?T1:Type ~> type( ?T2:Type -> hole )
+   ~> (x |-> ?T1:Type) ~> type( ?T2:Type -> hole )
    ~> .Map ~> type( ?T1:Type -> hole )
    ~> let f = hole
       in f 1
@@ -487,7 +486,7 @@ in f 1
 
 <Typecheck>
   <k> type( int )
-   ~> x |-> int ~> type( int -> hole )
+   ~> (x |-> int) ~> type( int -> hole )
    ~> .Map ~> type( int -> hole )
    ~> let f = hole
       in f 1
